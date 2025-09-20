@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+<style>
+  .header {
+    height: 300px;
+    background: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 50px;
+  }
+  .header-title h1 { color:white; }
+  .header-nav a {
+    color: white; 
+    font-size: 30px; 
+    text-decoration: none; 
+    margin-left: 20px;
+  }
+  a:hover { color: lightgreen; }
+
+  .content { margin-top: 150px; text-align: center; padding: 40px 20px; }
+  h2 { font-size: 35px; }
+
+  .animations {
+    display: flex; 
+    justify-content: center; 
+    flex-direction: column;
+    gap: 50px; 
+    max-width: 1200px; 
+    margin: 0 auto;
+    border: 2px solid black;
+    padding: 50px;
+  }
+  .animation_item {
+    display: flex; 
+    align-items: center; 
+    gap: 80px; 
+    margin-top: 100px;
+    padding-bottom: 80px;           /* ✅ 図形と線が重ならないよう余白を追加 */
+    width: 100%;
+  }
+
+.animation_item:not(:last-child) {
+  border-bottom: 2px dashed #000;
+}
+
+  /* ✅ 右側説明：幅300px＋折返し */
+  .item_desc {
+    flex: 0 0 300px;              /* 幅を固定300px */
+    max-width: 300px;
+    font-size: 18px; font-weight: bold;
+    overflow-wrap: anywhere;      /* 長い語も折り返す */
+    word-break: break-word;       /* 念のため */
+    text-align: left;
+  }
+
+/* 図形本体は z-index:1 にする */
+.square, .circle, .triangle, .diamond {
+  position: relative;
+  z-index: 1;
+}
+
+  /* ✅ 図形ラッパ：ラベルを中央に重ねる */
+  .shape {
+    position: relative;
+    width: 150px; height: 150px;  /* 既存サイズ踏襲 */
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  /* 三角は実体0×0なので縦横150の枠に中央配置 */
+  .shape--triangle { display: grid; place-items: center; }
+
+  /* ✅ ラベル：上下左右ど真ん中（回転の影響なし） */
+  .m_label {
+    position: absolute; 
+    inset: 0;
+    display: grid; 
+    place-items: center;
+    z-index: 10; color: #000; font-weight: 700;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+
+
+  /* 図形たち */
+  .square {
+    width: 150px; 
+    height: 150px; 
+    border-radius: 20px;
+    background: orange;
+     animation: spin 4s linear infinite;
+  }
+  @keyframes spin { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
+
+  .circle {
+    width: 150px; 
+    height: 150px; 
+    border-radius: 50%;
+    background: lawngreen; 
+    animation: pulse 5s ease-in-out infinite;
+  }
+
+
+  @keyframes pulse 
+  { 0%,100%{transform:scale(1)} 50%{transform:scale(1.5)} }
+
+  .triangle {
+    width: 0; height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 100px solid lightblue;
+    animation: bounce 5s ease-in-out infinite;
+  }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-30px)} }
+
+  /* ✅ ひし形（ダイヤ） */
+  .diamond-wrap { position: relative; width:150px; height:150px; display:grid; place-items:center; }
+  .diamond {
+    width: 110px; height: 110px;        /* 見栄え調整 */
+    border-radius: 20px;
+    background: blueviolet;
+    transform: rotate(45deg);
+    animation: slide 3s ease-in-out infinite alternate;
+  }
+  @keyframes slide { 0%{transform:rotate(45deg) translateX(0)} 25% {
+    transform:rotate(45deg) translateX(25px)
+  } 50%{transform:rotate(45deg) translateY(0)} 
+  100%{transform:rotate(45deg) translateX(25px)} }
+
+
+  .form-section {
+    margin: 80px auto;
+    max-width: 700px;
+    text-align: left;
+    padding: 30px;
+    border: 2px solid black;
+    border-radius: 5px;
+    background: #FFE6CE;
+  }
+
+  .form-section h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .form-group:not(:first-child) {
+    margin-top: 30px;
+  }
+
+  input[type="text"],
+  input[type="email"] {
+    width: 90%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid gray;
+    border-radius: 5px;
+
+  }
+
+  input[type="radio"] {
+    margin-top:15px;
+  }
+
+.form-section form {
+  text-align: center;   /* ✅ ボタンを中央に */
+}
+.btn-submit {
+  display: inline-block;
+  padding: 12px 40px;
+  font-size: 16px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 15px;
+font-weight: bold;
+}
+
+.btn-submit:hover {
+  background: white;
+  color: black;
+}
+
+  .footer {
+    height: 300px;
+    background: black;
+    display: flex;
+  flex-direction: column;      /* 上下に並べる */
+  justify-content: space-between; /* 上＝.footer-content, 下＝.copy */
+  margin-top: 150px;
+  }
+
+.footer-content {
+  display: flex;
+  align-items: center;      /* 中央寄せ */
+  justify-content: space-between;  /* 縦中央に配置 */
+  text-align: center;       /* テキストも中央寄せ */
+  height: 100%;             /* footerの高さに合わせる */
+  padding: 0 50px;
+}
+  .footer-title h1 { color:white; }
+  .footer-nav a {
+    color: white; 
+    font-size: 30px; 
+    text-decoration: none; 
+    margin-left: 20px;
+  }
+  a:hover { color: lightgreen; }
+
+
+  .copy {
+    text-align: center;
+    font-size: 12px;
+    color: white;
+  }
+
+</style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-title"><h1>図形の世界へようこそ</h1></div>
+    <div class="header-nav">
+      <a href="https://www.google.com/?hl=ja">トップ</a>
+      <a href="https://www.google.com/?hl=ja">ミドル</a>
+      <a href="https://www.google.com/?hl=ja">エンド</a>
+    </div>
+  </header>
+
+  <div class="content">
+    <h2>アニメーションの世界</h2>
+    <div class="animations">
+      <div class="animation_item">
+        <div class="shape">
+          <div class="square"></div>
+          <span class="m_label">回る</span>
+        </div>
+        <div class="item_desc">回転アニメーションのデモ。一定速度で四角が回ります。</div>
+      </div>
+
+      <div class="animation_item">
+        <div class="shape">
+          <div class="circle"></div>
+          <span class="m_label">拡大</span>
+        </div>
+        <div class="item_desc">拡大・縮小のデモ。円がリズミカルに鼓動します。</div>
+      </div>
+
+      <div class="animation_item">
+        <div class="shape shape--triangle">
+          <div class="triangle"></div>
+          <span class="m_label">動く</span>
+        </div>
+        <div class="item_desc">バウンドのデモ。三角形が上下にふわっと移動します。</div>
+      </div>
+
+      <div class="animation_item">
+        <div class="shape diamond-wrap">
+          <div class="diamond"></div>
+          <span class="m_label">ひし形</span>
+        </div>
+        <div class="item_desc">ひし形（ダイヤ）のスライド。左右にゆっくり移動します。</div>
+      </div>
+
+    </div>
+  </div>
+
+
+<div class="form-section">
+  <h2>アンケートフォーム</h2>
+  <form>   <!-- ← formタグを追加 -->
+    <div class="form-group">
+      <label for="name">名前</label><br>
+      <input type="text" id="name" name="name" required>
+    </div>
+    <div class="form-group">
+      <label for="email">メールアドレス</label><br>
+      <input type="email" id="email" name="email" required>
+    </div>
+    <div class="form-group">
+      <label>感想</label><br>
+      <label><input type="radio" name="feedback" value="good" required> 面白かった</label>
+      <label><input type="radio" name="feedback" value="bad"> 面白くなかった</label>
+    </div>
+
+    <button type="submit" class="btn-submit">送信</button>
+  </form>
+</div>
+
+  <footer class="footer">
+    <div class="footer-content">
+    <div class="footer-title">
+        <h1>図形の世界へようこそ</h1>
+    </div>
+        <div class="footer-nav">
+            <a href="https://www.google.com/?hl=ja">トップ</a>
+            <a href="https://www.google.com/?hl=ja">ミドル</a>
+            <a href="https://www.google.com/?hl=ja">エンド</a>
+    </div>
+    </div>
+    <p class="copy">&copy; 図形の世界へようこそ</p>
+  </footer>
+</body>
+</html>
